@@ -51,6 +51,17 @@ namespace SistemaLembrete.Application.Applications.Base
 
         public async Task Update(TEntity entity)
         {
+            var Invalid = (bool)entity.GetType().GetProperty("Invalid").GetValue(entity, null);
+
+            if (Invalid)
+            {
+                var validationResult = (ValidationResult)entity.GetType().GetProperty("ValidationResult").GetValue(entity, null);
+
+                _notificationContext.Add(validationResult);
+
+                return;
+            }
+
             await _repository.Update(entity);
         }
     }
